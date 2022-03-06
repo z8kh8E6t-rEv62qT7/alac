@@ -1,47 +1,26 @@
 # alacconvert make
 
-CFLAGS = -g -O3 -c
-LFLAGS = -Wall -L$(CODECDIR) -lalac
-CC = g++
+CXX = clang++
+CXXFLAGS = -g -O3 -pipe -c -march=native -static -std=c++20
+LDFLAGS = -Wall -O3 -pipe -march=native -static -lstdc++
 
-SRCDIR = .
 CODECDIR = ../codec
-OBJDIR = ./obj
 INCLUDES = ../codec
-
-HEADERS = \
-$(SRCDIR)/CAFFileALAC.h \
-$(CODECDIR)/EndianPortable.h \
-$(CODECDIR)/aglib.h \
-$(CODECDIR)/ALACAudioTypes.h \
-$(CODECDIR)/ALACBitUtilities.h\
-$(CODECDIR)/ALACDecoder.h \
-$(CODECDIR)/ALACEncoder.h \
-$(CODECDIR)/dplib.h \
-$(CODECDIR)/matrixlib.h
-
-SOURCES = \
-$(SRCDIR)/main.cpp \
-$(SRCDIR)/CAFFileALAC.cpp \
 
 OBJS = \
 main.o \
-CAFFileALAC.o 
+CAFFileALAC.o \
+$(CODECDIR)/libalac.a\
 
 alacconvert:	$(OBJS)
 	(cd $(CODECDIR); $(MAKE))
-	$(CC) $(LFLAGS) $(OBJS) -o alacconvert
+	$(CXX) $(LDFLAGS) $(OBJS) -o alacconvert
 
 main.o : main.cpp
-	$(CC) -I $(INCLUDES) $(CFLAGS) main.cpp
+	$(CXX) -I $(INCLUDES) $(CXXFLAGS) main.cpp
 
 CAFFileALAC.o : CAFFileALAC.cpp
-	$(CC) -I $(INCLUDES) $(CFLAGS) CAFFileALAC.cpp
+	$(CXX) -I $(INCLUDES) $(CXXFLAGS) CAFFileALAC.cpp
 
 clean:
 	-rm $(OBJS) alacconvert
-	
-
-
-
-
